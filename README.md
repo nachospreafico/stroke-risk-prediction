@@ -17,7 +17,6 @@ This repository includes:
 - Class imbalance handling (~19:1 ratio)
 - ROC-AUC and Precision–Recall evaluation
 - Cost-sensitive threshold optimization
-- Exportable scoring component (`model.joblib`)
 
 The focus is on modeling rigor and decision logic rather than UI or deployment tooling.
 
@@ -94,14 +93,12 @@ This project is intended as a methodological demonstration, not a clinical decis
 stroke-risk-scoring-engine/
 │
 ├── notebooks/
-│   ├── 01_clinical_eda.ipynb
+│   ├── 01_eda.ipynb
 │   ├── 02_modeling.ipynb
 │
 ├── data/
-│   ├── raw/
-│   └── processed/
+│   └── raw/
 │
-├── model.joblib
 ├── README.md
 ```
 
@@ -109,5 +106,10 @@ stroke-risk-scoring-engine/
 
 ## Author
 
-Ignacio Spreafico  
-MD | Data & Decision Science
+#### Ignacio Spreafico
+
+Data & Business Analyst | Forecasting | Statistics & Machine Learning
+
+[Linkedin]("https://www.linkedin.com/in/ignacio-spreafico")
+[Github]("https://www.github.com/nachospreafico")
+[Website]("https://ignaciospreafico.vercel.app")
