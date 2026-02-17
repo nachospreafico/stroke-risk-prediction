@@ -1,88 +1,90 @@
+# Stroke Risk Scoring Engine
 
-# Stroke Risk Scoring Engine v1
 ## Decision-Aware Predictive Modeling Prototype
 
-This project implements an end-to-end machine learning pipeline for stroke risk prediction, designed and framed as a deployable **risk scoring engine** rather than a standalone modeling exercise.
+This project implements a leakage-safe machine learning pipeline for probabilistic stroke risk prediction, with emphasis on **decision-aware threshold selection** rather than raw classification accuracy.
 
-The goal is not only to build a predictive model, but to demonstrate how probabilistic outputs can be translated into operational decisions through threshold tuning and cost-sensitive evaluation.
+The objective is to demonstrate how predictive models can be translated into operational decisions through structured evaluation and cost-sensitive analysis.
 
 ---
 
-## Project Overview
+## Project Scope
 
-This project includes:
+This repository includes:
 
 - Structured exploratory data analysis (EDA)
-- A fully reproducible preprocessing + modeling pipeline
-- Class imbalance handling
-- ROC and Precision-Recall evaluation
-- Threshold tuning under varying false-negative to false-positive cost assumptions
-- Exported pipeline for deployment
-- Streamlit-based interactive scoring prototype
+- Reproducible preprocessing and modeling pipeline
+- Class imbalance handling (~19:1 ratio)
+- ROC-AUC and Precision–Recall evaluation
+- Cost-sensitive threshold optimization
+- Exportable scoring component (`model.joblib`)
 
-The model serves as a prototype for operational risk stratification systems in healthcare or similar high-stakes domains.
+The focus is on modeling rigor and decision logic rather than UI or deployment tooling.
 
 ---
 
 ## Modeling Approach
 
-### Preprocessing Pipeline
+### Preprocessing
 
-- Median imputation for missing numeric values
+- Median imputation for numeric features
 - Standard scaling for continuous variables
 - One-hot encoding for categorical variables
-- Binary passthrough for boolean indicators
-- Strict train/test separation to prevent data leakage
+- Binary passthrough (0/1 indicators)
+- Strict train/test separation prior to fitting
 
-All preprocessing steps are embedded inside a `scikit-learn` Pipeline to ensure reproducibility and deployment consistency.
+All transformations are embedded inside a `scikit-learn` Pipeline to prevent data leakage and ensure reproducibility.
 
----
-
-### Baseline Model
+### Model
 
 - Logistic Regression
-- `class_weight="balanced"` to address 19:1 class imbalance
-- Probabilistic output (risk scoring, not just classification)
+- `class_weight="balanced"` to address severe class imbalance
+- Probabilistic output (risk score)
 
 ---
 
-## Model Performance
+## Performance Summary
 
-On held-out test data:
+Held-out test performance:
 
-- ROC-AUC ≈ 0.84
-- PR-AUC ≈ 0.25 (baseline ≈ 0.05 due to prevalence)
-- Strong recall achievable at the cost of precision
+- **ROC-AUC ≈ 0.84**
+- **PR-AUC ≈ 0.25** (baseline ≈ 0.05 due to prevalence)
 
-Performance evaluation focuses on decision trade-offs rather than raw accuracy.
-
----
-
-## Cost-Sensitive Threshold Optimization
-
-Instead of using a fixed 0.5 threshold, thresholds were optimized under varying cost assumptions:
-
-- FN:FP = 2
-- FN:FP = 5
-- FN:FP = 10
-
-This demonstrates how decision boundaries shift depending on operational priorities (e.g., minimizing missed cases vs reducing false positives).
-
-This transforms the model from a classifier into a configurable decision engine.
+Evaluation emphasizes recall–precision trade-offs and operational impact rather than raw accuracy.
 
 ---
 
-## Streamlit Risk Scoring Prototype
+## Decision-Aware Threshold Optimization
 
-The project includes a lightweight Streamlit application that:
+Instead of using the default 0.5 threshold, classification thresholds were optimized under varying false-negative to false-positive cost ratios (e.g., 2:1, 5:1, 10:1).
 
-- Accepts user inputs
-- Outputs predicted probability
-- Assigns risk tier (Low / Moderate / High)
-- Allows adjustable classification threshold
-- Simulates operational decision behavior
+This demonstrates:
 
-This represents a minimal viable scoring interface suitable for hospital operations or digital health prototyping.
+- How operating points shift under different risk tolerances
+- The trade-off between missed cases and unnecessary follow-ups
+- The importance of separating model probability from decision policy
+
+The model is therefore framed as a **risk scoring engine**, not a fixed classifier.
+
+---
+
+## Key Takeaways
+
+- Probabilistic models require explicit decision rules.
+- Threshold selection is a business/operational decision.
+- Evaluation under class imbalance requires PR-based metrics.
+- Clean preprocessing and pipeline design are critical for reproducibility.
+
+---
+
+## Limitations
+
+- Observational dataset (predictive ≠ causal)
+- No external validation dataset
+- Limited feature set
+- No calibration analysis included in this version
+
+This project is intended as a methodological demonstration, not a clinical decision tool.
 
 ---
 
@@ -95,55 +97,13 @@ stroke-risk-scoring-engine/
 │   ├── 01_clinical_eda.ipynb
 │   ├── 02_modeling.ipynb
 │
-├── app/
-│   ├── app.py
-│   ├── model.joblib
-│   ├── requirements.txt
-│
 ├── data/
 │   ├── raw/
-│   ├── processed/
+│   └── processed/
 │
+├── model.joblib
 ├── README.md
 ```
-
----
-
-## Running the Streamlit App
-
-From inside the `app/` directory:
-
-```
-pip install -r requirements.txt
-streamlit run app.py
-```
-
----
-
-## Deployment Considerations
-
-This prototype demonstrates key data product principles:
-
-- Leakage-safe preprocessing
-- Embedded transformation logic
-- Configurable decision thresholds
-- Cost-aware evaluation
-- Exportable scoring component
-
-For real-world deployment, additional steps would be required:
-
-- External validation
-- Calibration assessment
-- Drift monitoring
-- Periodic retraining
-- Clinical or domain review
-
----
-
-## Disclaimer
-
-This project is for educational and demonstration purposes only.  
-It is not a validated clinical decision tool and should not be used for medical decision-making.
 
 ---
 
